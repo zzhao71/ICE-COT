@@ -16,15 +16,15 @@ model = AutoModelForCausalLM.from_pretrained("EleutherAI/gpt-j-6B").to(device)
 tokenizer = AutoTokenizer.from_pretrained("EleutherAI/gpt-j-6B")
 
 
-use_imagine = True
+use_imagine = False
 
 total = 0
 correct = 0
 
 for i, entry in enumerate(tqdm.tqdm(dataset)):
-    rewrite = entry["requested_rewrite"]
+    rewrite = entry["requested_rewrite"][0]
     fact_prefix = "New Fact: " if not use_imagine else "Imagine "
-    new_fact = fact_prefix + rewrite["prompt"].format(rewrite["subject"]) + " " + rewrite["target_new"]["str"],
+    new_fact = fact_prefix + rewrite["prompt"].format(rewrite["subject"]) + " " + rewrite["target_new"]["str"]
     question = entry['questions'][0]
     
     prompt = new_fact + "\n" + question + "\n" + "Answer:"

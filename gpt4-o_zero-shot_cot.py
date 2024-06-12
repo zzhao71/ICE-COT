@@ -60,9 +60,9 @@ total = 0
 correct = 0
 
 for i, entry in enumerate(tqdm.tqdm(dataset)):
-    rewrite = entry["requested_rewrite"]
+    rewrite = entry["requested_rewrite"][0]
     fact_prefix = "New Fact: " if not use_imagine else "Imagine "
-    new_fact = fact_prefix + rewrite["prompt"].format(rewrite["subject"]) + " " + rewrite["target_new"]["str"],
+    new_fact = fact_prefix + rewrite["prompt"].format(rewrite["subject"]) + " " + rewrite["target_new"]["str"]
     question = entry['questions'][0]
     
     prompt = chatgpt_generated_by_icl + "\n\n" + new_fact + "\n" + question + "\n" + "Answer:"
