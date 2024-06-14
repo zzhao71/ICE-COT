@@ -21,24 +21,27 @@ Answer:
 
 New Fact: The Great Wall of China is located in India.
 Question: Which country would you visit to see the Great Wall of China and the Taj Mahal?
-Answer: 
+Thought: 
 1. Identify the location of the Great Wall of China as India (based on the new fact).
 2. Identify that the Taj Mahal is also located in India.
 3. Therefore, you would visit India to see both the Great Wall of China and the Taj Mahal.
+Answer: India
 
 New Fact: The primary language spoken in Brazil is Spanish.
 Question: If someone from Brazil and someone from Mexico have a conversation in their primary languages, what language would they likely use?
-Answer: 
+Thought: 
 1. Identify the primary language spoken in Brazil as Spanish (based on the new fact).
 2. Identify the primary language spoken in Mexico as Spanish.
 3. Therefore, they would likely use Spanish to converse.
+Answer: Spanish
 
 New Fact: Mount Everest is located in the Andes mountain range.
 Question: In which mountain range would you find the highest peak in the world?
-Answer: 
+Thought: 
 1. Identify Mount Everest as the highest peak in the world.
 2. Identify the location of Mount Everest as the Andes mountain range (based on the new fact).
 3. Therefore, you would find the highest peak in the world in the Andes mountain range.
+Answer: Andes
 '''
 
 
@@ -54,35 +57,39 @@ model = AutoModelForCausalLM.from_pretrained("EleutherAI/gpt-j-6B").to(device)
 tokenizer = AutoTokenizer.from_pretrained("EleutherAI/gpt-j-6B")
 
 
-use_imagine = True
+use_imagine = False
 
 total = 0
 correct = 0
 
 for i, entry in enumerate(tqdm.tqdm(dataset)):
-    rewrite = entry["requested_rewrite"][0]
     fact_prefix = "New Fact: " if not use_imagine else "Imagine "
-    new_fact = fact_prefix + rewrite["prompt"].format(rewrite["subject"]) + " " + rewrite["target_new"]["str"]
-    question = entry['questions'][0]
+    new_facts = []
+    for rewrite in entry["requested_rewrite"]:
+        new_facts.append(rewrite["prompt"].format(rewrite["subject"]) + " " + rewrite["target_new"]["str"])
     
-    prompt = chatgpt_generated_by_icl + "\n\n" + new_fact + "\n" + question + "\n" + "Answer:"
+    for question in entry['questions']:
     
-    input_ids = tokenizer(prompt, return_tensors="pt").input_ids.to(device)
+        prompt = chatgpt_generated_by_icl + "\n\n" + fact_prefix + ", ".join(new_facts) + "\n" + "Question: " + question + "\n"
+        
+        
+        input_ids = tokenizer(prompt, return_tensors="pt").input_ids.to(device)
 
-    gen_tokens = model.generate(
-        input_ids,
-        do_sample=True,
-        temperature=0.9,
-        max_length=500,
-        max_new_tokens=50,
-    )
-    generated_token_ids = gen_tokens[0][input_ids.shape[1]:]
-    generated_text = tokenizer.decode(generated_token_ids, skip_special_tokens=True)
+        gen_tokens = model.generate(
+            input_ids,
+            do_sample=True,
+            temperature=0.9,
+            max_length=500,
+            max_new_tokens=50,
+        )
+        generated_token_ids = gen_tokens[0][input_ids.shape[1]:]
+        generated_text = tokenizer.decode(generated_token_ids, skip_special_tokens=True)
 
-    answers = entry['new_answer_alias']
-    answers.append(entry["new_answer"])
-    if is_answer_correct(generated_text, answers):
-        correct += 1
+        answers = entry['new_answer_alias']
+        answers.append(entry["new_answer"])
+        if is_answer_correct(generated_text, answers):
+            correct += 1
+            break
     total += 1
     
 print(f"Correct: {correct}/{total} ({correct/total*100:.2f}%)")
