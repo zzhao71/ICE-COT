@@ -31,10 +31,21 @@
 #     done
 # done
 
-for num_human_icl in 1 2 3 4 5; do
-    for p_model in gpt-4o gpt-3.5-turbo gpt-4-turbo; do
-            sbatch srun_mquake.sh $p_model 3 $num_human_icl
-    done
+# for num_human_icl in 1 2 3 4 5; do
+#     for p_model in gpt-4o gpt-3.5-turbo gpt-4-turbo; do
+#             sbatch srun_mquake.sh $p_model 3 $num_human_icl
+#     done
+# done
+
+for num_shot in 1 2 3 4 5; do
+    python icl_cot.py \
+        --prompt_type gptj_icl_by_human_icl \
+        --prompt_model None \
+        --num_shot $num_shot \
+        --num_human_icl -1 \
+        --json datasets/MQuAKE-CF-3k.json \
+        --dataset mquake \
+        --out_dir output/mquake
 done
 
 # # traverse all json files in output/mquake

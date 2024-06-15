@@ -1,7 +1,7 @@
 import json
 import torch
 import tqdm
-from icl_generator import human_icl, chatgpt_icl_by_human_icl, chatgpt_icl_by_zeroshot
+from icl_generator import human_icl, chatgpt_icl_by_human_icl, chatgpt_icl_by_zeroshot, gptj_icl_by_human_icl
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import os
 import argparse
@@ -33,7 +33,13 @@ elif args.prompt_type == "human_icl":
 elif args.prompt_type == "zero_shot":
     icl_prompt = ""
     out_filename = f"{os.path.basename(args.json).split('.')[0]}_output_zero-shot.json"
-
+elif args.prompt_type == "gptj_icl_by_human_icl_generate_on_the_fly":
+    icl_prompt = gptj_icl_by_human_icl(args.num_human_icl, args.num_shot, True)
+    out_filename = f"{os.path.basename(args.json).split('.')[0]}_output_gptj_icl_by_human_icl_generate_on_the_fly_num-shot-{args.num_shot}_num-human-icl-{args.num_human_icl}.json"
+elif args.prompt_type == "gptj_icl_by_human_icl":
+    icl_prompt = gptj_icl_by_human_icl(-1, args.num_shot, True)
+    out_filename = f"{os.path.basename(args.json).split('.')[0]}_output_gptj_icl_by_human_icl_num-shot-{args.num_shot}.json"
+    
 if args.dataset == "mquake":
     dataset = load_mquake(args.json)
 
