@@ -4,7 +4,7 @@
 #         --prompt_model None \
 #         --num_shot $num_shot \
 #         --num_human_icl -1 \
-#         --json datasets/MQuAKE-CF-3k.json \
+#         --json datasets/mquake/MQuAKE-CF-3k.json \
 #         --dataset mquake \
 #         --out_dir output/mquake &
 # done
@@ -14,7 +14,7 @@
 #     --prompt_model None \
 #     --num_shot -1 \
 #     --num_human_icl -1 \
-#     --json datasets/MQuAKE-CF-3k.json \
+#     --json datasets/mquake/MQuAKE-CF-3k.json \
 #     --dataset mquake \
 #     --out_dir output/mquake
 
@@ -25,7 +25,7 @@
 #             --prompt_model $p_model \
 #             --num_shot $num_shot \
 #             --num_human_icl -1 \
-#             --json datasets/MQuAKE-CF-3k.json \
+#             --json datasets/mquake/MQuAKE-CF-3k.json \
 #             --dataset mquake \
 #             --out_dir output/mquake
 #     done
@@ -37,15 +37,15 @@
 #     done
 # done
 
-for num_shot in 1 2 3 4 5; do
+for num_shot in 4 5; do
     python icl_cot.py \
         --prompt_type gptj_icl_by_human_icl \
         --prompt_model None \
         --num_shot $num_shot \
         --num_human_icl -1 \
-        --json datasets/MQuAKE-CF-3k.json \
+        --json datasets/mquake/MQuAKE-CF-3k.json \
         --dataset mquake \
-        --out_dir output/mquake
+        --out_dir output/mquake &
 done
 
 # # traverse all json files in output/mquake

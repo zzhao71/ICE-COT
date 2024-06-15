@@ -37,8 +37,13 @@ elif args.prompt_type == "gptj_icl_by_human_icl_generate_on_the_fly":
     icl_prompt = gptj_icl_by_human_icl(args.num_human_icl, args.num_shot, True)
     out_filename = f"{os.path.basename(args.json).split('.')[0]}_output_gptj_icl_by_human_icl_generate_on_the_fly_num-shot-{args.num_shot}_num-human-icl-{args.num_human_icl}.json"
 elif args.prompt_type == "gptj_icl_by_human_icl":
-    icl_prompt = gptj_icl_by_human_icl(-1, args.num_shot, True)
+    icl_prompt = gptj_icl_by_human_icl(-1, args.num_shot, False)
     out_filename = f"{os.path.basename(args.json).split('.')[0]}_output_gptj_icl_by_human_icl_num-shot-{args.num_shot}.json"
+    
+if os.path.exists(os.path.join(args.out_dir, out_filename)):
+    print("already exists!!!")
+    import sys
+    sys.exit()
     
 if args.dataset == "mquake":
     dataset = load_mquake(args.json)
