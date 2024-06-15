@@ -165,3 +165,5 @@ __pycache__
 
 train_output/*
 nohup.out
+slurm_logs
+output

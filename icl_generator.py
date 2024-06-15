@@ -27,7 +27,8 @@ def call_gpt(messages, model_name="gpt-4o"):
         except Exception as e:
             print(e)
             time.sleep(30)
-    return response.choices[0].message['content']
+
+    return response.choices[0].message.content
 
 def human_icl(num_shot):
     ##############################################

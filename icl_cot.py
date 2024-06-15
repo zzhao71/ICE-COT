@@ -38,7 +38,7 @@ if args.dataset == "mquake":
     dataset = load_mquake(args.json)
 
 if args.debug:
-    dataset = dataset[:10]
+    dataset = dataset[:2]
     
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = AutoModelForCausalLM.from_pretrained("EleutherAI/gpt-j-6B").to(device)
@@ -52,7 +52,6 @@ for i, entry in enumerate(tqdm.tqdm(dataset)):
     for question in entry['formated_questions']:
     
         prompt = icl_prompt + question
-        
         
         input_ids = tokenizer(prompt, return_tensors="pt").input_ids.to(device)
 
