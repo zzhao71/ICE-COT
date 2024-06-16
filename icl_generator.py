@@ -35,7 +35,7 @@ def human_icl(num_shot):
     # generate human icl with MQuAKE dataset
     ##############################################
 
-    with open('datasets/MQuAKE-CF-3k.json', 'r') as f:
+    with open('datasets/mquake/MQuAKE-CF-3k.json', 'r') as f:
         data = json.load(f)
     human_icl = []
     sampled = random.sample(data, num_shot)
@@ -51,12 +51,29 @@ def human_icl(num_shot):
         thoughts = " ".join(thoughts)
         human_icl.append(fact_prefix + ", ".join(new_facts) + "\n" + "Question: " + entry['questions'][0] + "\n" + "Thought: " + thoughts + "\n" + "Answer: " + entry["new_answer"])
     return "\n\n".join(human_icl)
+def human_icl_only(num_shot):
+    ##############################################
+    # generate human icl with MQuAKE dataset
+    ##############################################
+
+    with open('datasets/mquake/MQuAKE-CF-3k.json', 'r') as f:
+        data = json.load(f)
+    human_icl = []
+    sampled = random.sample(data, num_shot)
+    for entry in sampled:
+        fact_prefix = "New Fact: "
+        new_facts = []
+        for rewrite in entry["requested_rewrite"]:
+            new_facts.append(rewrite["prompt"].format(rewrite["subject"]) + " " + rewrite["target_new"]["str"])
+    
+        human_icl.append(fact_prefix + ", ".join(new_facts) + "\n" + "Question: " + entry['questions'][0] + "\n" + "Answer: " + entry["new_answer"])
+    return "\n\n".join(human_icl)
 
 def chatgpt_icl_by_human_icl(model_name, num_shot, num_human_icl):
     ##############################################
     # generate human icl
     ##############################################
-    with open('datasets/MQuAKE-CF-3k.json', 'r') as f:
+    with open('datasets/mquake/MQuAKE-CF-3k.json', 'r') as f:
         data = json.load(f)
     human_icl = []
     sampled = random.sample(data, num_human_icl)

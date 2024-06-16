@@ -25,7 +25,7 @@ os.makedirs(args.out_dir, exist_ok=True)
     
 if args.dataset == "mquake":
     dataset = load_mquake(args.json)
-    from icl_generator import human_icl, chatgpt_icl_by_human_icl, chatgpt_icl_by_zeroshot, gptj_icl_by_human_icl
+    from icl_generator import human_icl_only, human_icl, chatgpt_icl_by_human_icl, chatgpt_icl_by_zeroshot, gptj_icl_by_human_icl
     if args.prompt_type == "chatgpt_icl_by_human_icl":
         icl_prompt = chatgpt_icl_by_human_icl(args.prompt_model,args.num_shot, args.num_human_icl) + "\n\n"
         out_filename = f"{os.path.basename(args.json).split('.')[0]}_output_chatgpt-icl-by-human-icl_pmodel-{args.prompt_model}_num-shot-{args.num_shot}_num-human-icl-{args.num_human_icl}.json"
@@ -35,6 +35,9 @@ if args.dataset == "mquake":
     elif args.prompt_type == "human_icl":
         icl_prompt = human_icl(args.num_shot) + "\n\n"
         out_filename = f"{os.path.basename(args.json).split('.')[0]}_output_human-icl_num-shot-{args.num_shot}.json"
+    elif args.prompt_type == "human_icl_only":
+        icl_prompt = human_icl_only(args.num_shot) + "\n\n"
+        out_filename = f"{os.path.basename(args.json).split('.')[0]}_output_human-icl-only_num-shot-{args.num_shot}.json"
     elif args.prompt_type == "zero_shot":
         icl_prompt = ""
         out_filename = f"{os.path.basename(args.json).split('.')[0]}_output_zero-shot.json"

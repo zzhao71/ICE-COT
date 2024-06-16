@@ -46,11 +46,12 @@ def load_ripple(json_file):
         for question in unformatted_questions:
             questions = []
             for test_query in question["test_queries"]:
-                question =  "New Fact: " + new_fact + "\n" + "Question: " + test_query["prompt"] + "\n"
-                questions.append(question)
-        
-            answers = test_query["answers"]["aliases"]
-            answers.append(test_query["answers"]["value"])
+                questions.append("New Fact: " + new_fact + "\n" + "Prompt: " + test_query["prompt"] + "\n")
+            if len(question["test_queries"][0]["answers"]) == 0:
+                continue
+            
+            answers = question["test_queries"][0]["answers"][0]["aliases"]
+            answers.append(question["test_queries"][0]["answers"][0]["value"])
             question["formated_questions"] = questions
             question["formated_answers"] = answers
             formatted_questions.append(question)

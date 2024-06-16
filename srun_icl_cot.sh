@@ -10,16 +10,14 @@
 #SBATCH --output "slurm_logs/slurm-%j.out"
 mkdir -p slurm_logs
 
-p_model=$1
-num_shot=$2
-num_human_icl=$3
+
 
 
 python icl_cot.py \
-    --prompt_type chatgpt_icl_by_human_icl \
-    --prompt_model $p_model \
-    --num_shot $num_shot \
-    --num_human_icl $num_human_icl \
-    --json datasets/MQuAKE-CF-3k.json \
-    --dataset mquake \
-    --out_dir output/mquake
+    --prompt_type $1 \
+    --prompt_model $2 \
+    --num_shot $3 \
+    --num_human_icl $4 \
+    --json $5 \
+    --dataset $6 \
+    --out_dir $7
